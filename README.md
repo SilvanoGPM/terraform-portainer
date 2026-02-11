@@ -233,7 +233,7 @@ cloud_provider = "hetzner"
 hetzner_api_token            = "seu-token-hetzner"
 hetzner_ssh_private_key_path = "~/.ssh/id_ed25519"
 hetzner_ssh_public_key_path  = "~/.ssh/id_ed25519.pub"
-hetzner_server_type          = "cx22"
+hetzner_server_type          = "cax11"
 hetzner_location             = "nbg1"
 
 # Project
@@ -325,7 +325,7 @@ Após a conclusão, você poderá acessar:
 | `environment` | `string` | `dev` | Ambiente de implantação (ex.: dev, staging, prod) |
 | `aws_region` | `string` | `us-east-1` | Região AWS |
 | `aws_instance_type` | `string` | `t2.micro` | Tipo de instância EC2 |
-| `hetzner_server_type` | `string` | `cx22` | Tipo de servidor Hetzner (ex.: cx22, cpx21, cx32) |
+| `hetzner_server_type` | `string` | `cax11` | Tipo de servidor Hetzner (ex.: cax11, cx22, cpx21, cx32) |
 | `hetzner_location` | `string` | `nbg1` | Datacenter Hetzner (nbg1, fsn1, hel1, ash) |
 | `hetzner_image` | `string` | `ubuntu-22.04` | Imagem do SO para servidores Hetzner |
 | `docker_swarm_manager_count` | `number` | `1` | Quantidade de nós Manager |
@@ -387,3 +387,7 @@ terraform destroy
 ```
 
 > **Atenção:** Este comando irá destruir todas as instâncias EC2 e recursos associados. Certifique-se de ter backup dos dados importantes.
+
+## Certificado SSL
+
+> O Let's Encrypt tem um limite de certificados por domínio. Recomendo utilizar o projeto com a variável `environment` diferente de `prod` para evitar atingir esse limite durante testes, o navegador pode exibir erros de certificado, porém fora de produção esses erros podem ser ignorados. Já em produção, utilize um valor como `prod` para garantir que os certificados sejam gerados corretamente.

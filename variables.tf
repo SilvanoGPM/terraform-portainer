@@ -67,8 +67,8 @@ variable "hetzner_ssh_public_key_path" {
 
 variable "hetzner_server_type" {
   type        = string
-  description = "Tipo de servidor Hetzner Cloud (ex.: cx22, cpx21, cx32)"
-  default     = "cx22"
+  description = "Tipo de servidor Hetzner Cloud (ex.: cax11, cx22, cpx21, cx32)"
+  default     = "cax11"
 }
 
 variable "hetzner_location" {
