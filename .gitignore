@@ -1,0 +1,53 @@
+# =========================
+# Terraform
+# =========================
+
+# Diretório de dependências/plugins
+.terraform/
+
+# Arquivos de estado (podem conter segredos!)
+*.tfstate
+*.tfstate.*
+
+# Lock file (veja observação abaixo)
+.terraform.lock.hcl
+
+# Variáveis sensíveis
+*.tfvars
+*.tfvars.json
+
+# Overrides locais
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Planos gerados
+*.tfplan
+
+# Logs
+crash.log
+crash.*.log
+
+# CLI config local
+.terraformrc
+terraform.rc
+
+# =========================
+# IDEs e SO
+# =========================
+
+# VSCode
+.vscode/
+
+# IntelliJ
+.idea/
+
+# MacOS
+.DS_Store
+
+# Linux
+*~
+
+# infra stack yaml
+./scripts/infra-stack.yaml
