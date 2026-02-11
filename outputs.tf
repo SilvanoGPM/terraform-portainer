@@ -1,14 +1,18 @@
+output "cloud_provider" {
+  value = var.cloud_provider
+}
+
 output "manager_primary_public_ip" {
-  value = aws_instance.docker_swarm_manager_primary.public_ip
+  value = local.primary_public_ip
 }
 
 output "manager_primary_ssh_connect" {
-  value = "ssh -i ${var.aws_ssh_private_key_path} ${var.aws_default_user}@${aws_instance.docker_swarm_manager_primary.public_ip}"
+  value = "ssh -i ${local.ssh_private_key_path} ${local.ssh_user}@${local.primary_public_ip}"
 }
 
 output "urls" {
   value = {
-    traefik  = "https://traefik.${var.domain}",
+    traefik   = "https://traefik.${var.domain}",
     portainer = "https://portainer.${var.domain}"
   }
 }

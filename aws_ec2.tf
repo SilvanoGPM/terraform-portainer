@@ -1,17 +1,20 @@
 resource "aws_instance" "docker_swarm_manager_primary" {
-  ami                    = data.aws_ami.ubuntu_22.id
+  count                  = local.is_aws ? 1 : 0
+  ami                    = data.aws_ami.ubuntu_22[0].id
   instance_type          = var.aws_instance_type
-  vpc_security_group_ids = [aws_security_group.docker_sg.id]
-  subnet_id              = aws_default_subnet.default_az1.id
+  vpc_security_group_ids = [aws_security_group.docker_sg[0].id]
+  subnet_id              = aws_default_subnet.default_az1[0].id
   key_name               = "${var.project_name}-key"
 }
 
 resource "null_resource" "docker_swarm_manager_primary_setup" {
+  count = local.is_aws ? 1 : 0
+
   connection {
     type        = "ssh"
     user        = var.aws_default_user
-    host        = aws_instance.docker_swarm_manager_primary.public_ip
-    private_key = file("${var.aws_ssh_private_key_path}")
+    host        = aws_instance.docker_swarm_manager_primary[0].public_ip
+    private_key = file(var.aws_ssh_private_key_path)
   }
 
   provisioner "file" {
@@ -42,17 +45,17 @@ resource "null_resource" "docker_swarm_manager_primary_setup" {
 }
 
 resource "aws_instance" "swarm_managers" {
-  count = var.docker_swarm_manager_count - 1
+  count = local.is_aws ? var.docker_swarm_manager_count - 1 : 0
 
-  ami                    = data.aws_ami.ubuntu_22.id
+  ami                    = data.aws_ami.ubuntu_22[0].id
   instance_type          = var.aws_instance_type
-  vpc_security_group_ids = [aws_security_group.docker_sg.id]
-  subnet_id              = aws_default_subnet.default_az1.id
+  vpc_security_group_ids = [aws_security_group.docker_sg[0].id]
+  subnet_id              = aws_default_subnet.default_az1[0].id
   key_name               = "${var.project_name}-key"
 }
 
 resource "null_resource" "manager_join" {
-  count = var.docker_swarm_manager_count - 1
+  count = local.is_aws ? var.docker_swarm_manager_count - 1 : 0
 
   connection {
     type        = "ssh"
@@ -75,9 +78,9 @@ resource "null_resource" "manager_join" {
       "sudo systemctl start docker",
 
       # pegar token do manager primário
-      "TOKEN=$(sudo ssh -i /home/${var.aws_default_user}/.ssh/id_rsa -o StrictHostKeyChecking=no ${var.aws_default_user}@${aws_instance.docker_swarm_manager_primary.public_ip} 'cat manager_token')",
+      "TOKEN=$(sudo ssh -i /home/${var.aws_default_user}/.ssh/id_rsa -o StrictHostKeyChecking=no ${var.aws_default_user}@${aws_instance.docker_swarm_manager_primary[0].public_ip} 'cat manager_token')",
 
-      "sudo docker swarm join --token $TOKEN ${aws_instance.docker_swarm_manager_primary.private_ip}:2377"
+      "sudo docker swarm join --token $TOKEN ${aws_instance.docker_swarm_manager_primary[0].private_ip}:2377"
     ]
   }
 
@@ -85,17 +88,17 @@ resource "null_resource" "manager_join" {
 }
 
 resource "aws_instance" "swarm_workers" {
-  count = var.docker_swarm_worker_count
+  count = local.is_aws ? var.docker_swarm_worker_count : 0
 
-  ami                    = data.aws_ami.ubuntu_22.id
+  ami                    = data.aws_ami.ubuntu_22[0].id
   instance_type          = var.aws_instance_type
-  vpc_security_group_ids = [aws_security_group.docker_sg.id]
-  subnet_id              = aws_default_subnet.default_az1.id
+  vpc_security_group_ids = [aws_security_group.docker_sg[0].id]
+  subnet_id              = aws_default_subnet.default_az1[0].id
   key_name               = "${var.project_name}-key"
 }
 
 resource "null_resource" "worker_join" {
-  count = var.docker_swarm_worker_count
+  count = local.is_aws ? var.docker_swarm_worker_count : 0
 
   connection {
     type        = "ssh"
@@ -117,9 +120,9 @@ resource "null_resource" "worker_join" {
       "sudo systemctl enable docker",
       "sudo systemctl start docker",
 
-      "TOKEN=$(sudo ssh -i /home/${var.aws_default_user}/.ssh/id_rsa -o StrictHostKeyChecking=no ${var.aws_default_user}@${aws_instance.docker_swarm_manager_primary.public_ip} 'cat worker_token')",
+      "TOKEN=$(sudo ssh -i /home/${var.aws_default_user}/.ssh/id_rsa -o StrictHostKeyChecking=no ${var.aws_default_user}@${aws_instance.docker_swarm_manager_primary[0].public_ip} 'cat worker_token')",
 
-      "sudo docker swarm join --token $TOKEN ${aws_instance.docker_swarm_manager_primary.private_ip}:2377"
+      "sudo docker swarm join --token $TOKEN ${aws_instance.docker_swarm_manager_primary[0].private_ip}:2377"
     ]
   }
 

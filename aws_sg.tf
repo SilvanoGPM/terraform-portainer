@@ -1,7 +1,8 @@
 resource "aws_security_group" "docker_sg" {
+  count       = local.is_aws ? 1 : 0
   name        = "${var.project_name}-docker-swarm-sg"
   description = "Security group para os nos do Docker Swarm"
-  vpc_id      = aws_default_vpc.default_vpc.id
+  vpc_id      = aws_default_vpc.default_vpc[0].id
 
   egress {
     description = "Permitir todo o trafego de saida"

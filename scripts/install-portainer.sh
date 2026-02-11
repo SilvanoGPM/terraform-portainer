@@ -13,9 +13,10 @@ sudo systemctl start docker
 
 echo "=== Adicionando usuário ao grupo docker ==="
 sudo usermod -aG docker ubuntu || true
+sudo usermod -aG docker $USER || true
 
 echo "=== Obtendo IP privado ==="
-PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4 || hostname -I | awk '{print $1}')
+PRIVATE_IP=$(curl -sf http://169.254.169.254/latest/meta-data/local-ipv4 2>/dev/null || hostname -I | awk '{print $1}')
 
 echo "IP privado detectado: $PRIVATE_IP"
 
