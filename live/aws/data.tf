@@ -1,5 +1,4 @@
 data "aws_ami" "ubuntu_22" {
-  count       = local.is_aws ? 1 : 0
   most_recent = true
 
   owners = ["099720109477"] # Canonical
@@ -20,6 +19,4 @@ data "aws_ami" "ubuntu_22" {
   }
 }
 
-data "aws_availability_zones" "available_zones" {
-  count = local.is_aws ? 1 : 0
-}
+data "aws_availability_zones" "available_zones" {}

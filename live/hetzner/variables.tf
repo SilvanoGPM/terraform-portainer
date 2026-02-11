@@ -1,68 +1,21 @@
-variable "cloud_provider" {
-  type        = string
-  description = "Provedor de nuvem para deploy (aws ou hetzner)"
-  default     = "aws"
-  validation {
-    condition     = contains(["aws", "hetzner"], var.cloud_provider)
-    error_message = "O provedor deve ser 'aws' ou 'hetzner'."
-  }
-}
-
-# ========================
-# Variáveis AWS
-# ========================
-
-variable "aws_region" {
-  type        = string
-  description = "Região AWS onde os recursos serão provisionados"
-  default     = "us-east-1"
-}
-
-variable "aws_profile" {
-  type        = string
-  description = "Perfil AWS CLI a ser usado para autenticação (obrigatório quando cloud_provider = aws)"
-  default     = null
-}
-
-variable "aws_ssh_private_key_path" {
-  type        = string
-  description = "Caminho para a chave privada SSH para acesso à instância EC2 (obrigatório quando cloud_provider = aws)"
-  default     = null
-}
-
-variable "aws_instance_type" {
-  type        = string
-  description = "Tipo de instância EC2 para os nós do Docker Swarm"
-  default     = "t2.micro"
-}
-
-variable "aws_default_user" {
-  type        = string
-  description = "Usuário padrão para acesso às instâncias EC2"
-  default     = "ubuntu"
-}
-
 # ========================
 # Variáveis Hetzner
 # ========================
 
 variable "hetzner_api_token" {
   type        = string
-  description = "Token da API da Hetzner Cloud (obrigatório quando cloud_provider = hetzner)"
-  default     = null
+  description = "Token da API da Hetzner Cloud"
   sensitive   = true
 }
 
 variable "hetzner_ssh_private_key_path" {
   type        = string
-  description = "Caminho para a chave privada SSH para acesso aos servidores Hetzner (obrigatório quando cloud_provider = hetzner)"
-  default     = null
+  description = "Caminho para a chave privada SSH para acesso aos servidores Hetzner"
 }
 
 variable "hetzner_ssh_public_key_path" {
   type        = string
-  description = "Caminho para a chave pública SSH para registrar na Hetzner Cloud (obrigatório quando cloud_provider = hetzner)"
-  default     = null
+  description = "Caminho para a chave pública SSH para registrar na Hetzner Cloud"
 }
 
 variable "hetzner_server_type" {
@@ -93,19 +46,19 @@ variable "hetzner_default_user" {
 # Variáveis do Projeto
 # ========================
 
+variable "project_name" {
+  type        = string
+  description = "Nome do projeto para a marcação dos recursos"
+}
+
 variable "environment" {
   type        = string
-  description = "Ambiente de implantação (ex.: dev, staging, prod)"
+  description = "Ambiente de implantação (dev, staging, prod)"
   default     = "dev"
   validation {
     condition     = contains(["dev", "staging", "prod"], var.environment)
     error_message = "O ambiente deve ser 'dev', 'staging' ou 'prod'."
   }
-}
-
-variable "project_name" {
-  type        = string
-  description = "Nome do projeto para a marcação dos recursos"
 }
 
 variable "domain" {

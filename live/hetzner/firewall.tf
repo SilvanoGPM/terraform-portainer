@@ -1,6 +1,5 @@
 resource "hcloud_firewall" "docker_fw" {
-  count = local.is_hetzner ? 1 : 0
-  name  = "${var.project_name}-docker-swarm-fw"
+  name = "${var.project_name}-docker-swarm-fw"
 
   rule {
     description = "Permitir acesso HTTP"

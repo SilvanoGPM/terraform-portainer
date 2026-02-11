@@ -1,8 +1,7 @@
 resource "aws_security_group" "docker_sg" {
-  count       = local.is_aws ? 1 : 0
   name        = "${var.project_name}-docker-swarm-sg"
   description = "Security group para os nos do Docker Swarm"
-  vpc_id      = aws_default_vpc.default_vpc[0].id
+  vpc_id      = aws_default_vpc.default_vpc.id
 
   egress {
     description = "Permitir todo o trafego de saida"
@@ -17,7 +16,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -25,7 +24,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -33,7 +32,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -41,7 +40,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 9000
     to_port     = 9000
     protocol    = "tcp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -49,7 +48,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 2377
     to_port     = 2377
     protocol    = "tcp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -57,7 +56,7 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 4789
     to_port     = 4789
     protocol    = "udp"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -65,6 +64,6 @@ resource "aws_security_group" "docker_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [local.sg_default_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
