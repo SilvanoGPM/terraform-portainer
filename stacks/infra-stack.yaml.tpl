@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.4
+    image: traefik:v3.7.11
     command:
       # Docker Swarm configuration
       - --providers.swarm=true
@@ -57,12 +57,14 @@ services:
         # Service (necessário para Swarm)
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
       restart_policy:
-        condition: on-failure
+        # condition: any reinicia tambem em saida limpa (exit 0). Com on-failure
+        # + max_attempts o servico ficava 0/1 permanentemente apos o Swarm desistir.
+        condition: any
         delay: 5s
-        max_attempts: 3
+        window: 120s
 
   agent:
-    image: portainer/agent:2.19.4
+    image: portainer/agent:2.39.6
     environment:
       AGENT_CLUSTER_ADDR: tasks.agent
     volumes:
@@ -79,7 +81,7 @@ services:
       - traefik
 
   portainer:
-    image: portainer/portainer-ce:2.19.4
+    image: portainer/portainer-ce:2.39.6
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     volumes:
       - portainer-data:/data
@@ -96,10 +98,18 @@ services:
         - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      update_config:
+        # O BoltDB do Portainer nao aceita duas instancias abertas no mesmo
+        # volume: a nova morre com "failed opening store: timeout". stop-first
+        # garante que a antiga encerre antes de a nova subir.
+        order: stop-first
+        failure_action: rollback
       restart_policy:
-        condition: on-failure
+        # condition: any reinicia tambem em saida limpa (exit 0). Com on-failure
+        # + max_attempts o servico ficava 0/1 permanentemente apos o Swarm desistir.
+        condition: any
         delay: 5s
-        max_attempts: 3
+        window: 120s
     depends_on:
       - traefik
 
